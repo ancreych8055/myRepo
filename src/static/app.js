@@ -553,7 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </ul>
       </div>
       <div class="share-buttons">
-        <button class="share-button tooltip" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" data-schedule="${escapeHtml(formattedSchedule)}" title="Share this activity">
+        <button class="share-button tooltip" data-activity="${escapeAttr(name)}" data-description="${escapeAttr(details.description)}" data-schedule="${escapeAttr(formattedSchedule)}" title="Share this activity">
           📤 Share
           <span class="tooltip-text">Share this activity with friends</span>
         </button>
@@ -690,6 +690,16 @@ document.addEventListener("DOMContentLoaded", () => {
     div.textContent = text;
     return div.innerHTML;
   }
+  
+  // Escape for use in HTML attributes
+  function escapeAttr(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
 
   // Handle share button click
   async function handleShare(event) {
@@ -793,7 +803,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Handle share option clicks - using event delegation
   document.addEventListener('click', (event) => {
     const shareModal = document.getElementById("share-modal");
-    if (!shareModal) return;
+    // Only process if modal exists and is visible
+    if (!shareModal || shareModal.classList.contains('hidden')) return;
     
     const shareText = shareModal.dataset.shareText;
     const shareUrl = shareModal.dataset.shareUrl;
